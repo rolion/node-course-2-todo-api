@@ -8,9 +8,9 @@ const {Todo} = require('./../models/todo');
    Todo.remove({}).then(()=> done());
  });
 
-describe('POST /todo', () => {
-  its('should create a new todo', (done)=>{
-    var test = 'Test todo test';
+describe('POST /todos', () => {
+  it('should create a new todo', (done)=>{
+    var text = 'Test todo test';
 
     request(app)
       .post('/todos')
@@ -30,5 +30,22 @@ describe('POST /todo', () => {
           done();
         }).catch((e) => done(e));
       });
+  });
+
+  it('Should not create todo with invalid data', (done)=>{
+
+    request(app)
+    .post('/todos').
+    send({})
+    .expect(400)
+    .end((err, res) => {
+      if(err){
+        return done(err);
+      }
+      Todo.find().then((todos)=>{
+        expect(todos.length).toBe(0);
+        done();
+      }).catch((e) => done(e));
+    });
   });
 });
